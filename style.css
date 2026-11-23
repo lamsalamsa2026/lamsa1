@@ -1,0 +1,95 @@
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: radial-gradient(circle at top, #F5ECEA 0%, #E7D8D6 100%);
+  color: #381223;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+html[lang="en"] body {
+  font-family: 'Plus Jakarta Sans', 'Tajawal', sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.screen-anim {
+  animation: screenFade 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes screenFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+input[type="range"].lamssa-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to left, #5E1D39 0%, #5E1D39 var(--val, 25%), #DFC9CE var(--val, 25%), #DFC9CE 100%);
+  outline: none;
+}
+html[dir="ltr"] input[type="range"].lamssa-slider {
+  background: linear-gradient(to right, #5E1D39 0%, #5E1D39 var(--val, 25%), #DFC9CE var(--val, 25%), #DFC9CE 100%);
+}
+input[type="range"].lamssa-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #5E1D39;
+  border: 3px solid #FFF7F4;
+  box-shadow: 0 2px 6px rgba(62, 18, 38, 0.45);
+  cursor: pointer;
+}
+
+.timeline-vertical-line {
+  right: 22px;
+}
+html[dir="ltr"] .timeline-vertical-line {
+  right: auto;
+  left: 22px;
+}
+
+/* زخرفة الورق في الرأس */
+.header-leaf-decor {
+  left: 0;
+}
+html[dir="ltr"] .header-leaf-decor {
+  left: auto;
+  right: 0;
+  transform: scaleX(-1);
+}
+
+.btn-champagne {
+  background: linear-gradient(180deg, #F6DEC2 0%, #E7BC8E 100%);
+  box-shadow: 0 8px 20px rgba(26, 6, 15, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  border: 1px solid #F7E4CE;
+  color: #431227;
+}
+.btn-champagne:active {
+  transform: scale(0.98);
+}
+
+.btn-plum-outline {
+  background: linear-gradient(180deg, #4B152E 0%, #330D1E 100%);
+  border: 2px solid #DFB68C;
+  box-shadow: 0 6px 18px rgba(20, 4, 11, 0.35);
+  color: #FFFFFF;
+}
+.btn-plum-outline:active {
+  transform: scale(0.98);
+}
+
+/* خلفية شاشة البداية 00.jpg */
+.splash-backdrop {
+  background: radial-gradient(circle at 50% 25%, #752749 0%, #4E1630 48%, #2E0B1B 100%);
+}

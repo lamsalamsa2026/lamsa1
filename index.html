@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لمسة - Lamssa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center sm:py-4">
+
+  <div id="phone-frame" class="relative w-full max-w-[395px] h-[100dvh] sm:h-[835px] bg-blushBg sm:rounded-[46px] sm:shadow-[0_25px_70px_-15px_rgba(46,11,27,0.45)] sm:border-[8px] sm:border-[#2B121D] overflow-hidden flex flex-col select-none">
+
+    <!-- =============================================================== -->
+    <!-- شاشة البداية (Splash Screen)                                     -->
+    <!-- =============================================================== -->
+    <div id="screen-splash" class="absolute inset-0 z-40 text-white flex flex-col justify-between overflow-hidden screen-anim splash-backdrop bg-cover bg-center" style="background-image: url('background/00.jpg');">
+      <!-- شريط الحالة العلوي + زر تبديل اللغة -->
+      <div class="z-20">
+        <div class="flex items-center justify-between px-7 pt-3 text-[11px] font-bold text-white/90" dir="ltr">
+          <span>9:41</span>
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-signal text-[10px]"></i>
+            <i class="fa-solid fa-wifi text-[10px]"></i>
+            <i class="fa-solid fa-battery-full text-[11px]"></i>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between px-5 pt-3 gap-2">
+          <span class="px-3 py-1.5 rounded-full bg-black/35 backdrop-blur-md border border-goldWarm/45 text-goldChampagne text-[11px] font-extrabold flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-flask text-[10px]"></i>
+            <span data-i18n="prototypeBadge">نموذج أولي تجريبي</span>
+          </span>
+          <button type="button" onclick="toggleLanguage()" class="lang-toggle-btn px-3 py-1.5 rounded-full bg-black/30 hover:bg-black/45 backdrop-blur-md border border-goldWarm/50 text-goldChampagne text-xs font-extrabold flex items-center gap-1.5 shadow-sm transition active:scale-95">
+            <i class="fa-solid fa-globe text-[11px]"></i>
+            <span class="lang-toggle-label">EN</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative z-20 px-6 pb-8 space-y-3" style="padding: 0 15px 160px 15px">
+        <button onclick="navigateTo('client-setup')" class="btn-champagne w-full py-3.5 px-6 rounded-full font-extrabold text-lg flex items-center justify-between transition">
+          <span class="w-6"></span>
+          <span data-i18n="splashStartBtn">ابدئي الآن</span>
+          <i id="splash-start-arrow" class="fa-solid fa-arrow-left text-base"></i>
+        </button>
+      </div>
+    </div>
+
+    <header id="app-top-header" class="hidden relative shrink-0 z-20">
+      <div class="relative bg-gradient-to-b from-[#451329] via-[#5E1D39] to-[#742848] pt-2.5 pb-6 px-5 text-white overflow-hidden">
+        <div class="flex items-center justify-between text-[11px] font-bold text-white/90 mb-1" dir="ltr">
+          <span>9:41</span>
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-signal text-[10px]"></i>
+            <i class="fa-solid fa-wifi text-[10px]"></i>
+            <i class="fa-solid fa-battery-full text-[11px]"></i>
+          </div>
+        </div>
+
+        <div class="relative flex items-center justify-between min-h-[62px]">
+          <div class="w-20 flex items-center justify-start z-10">
+            <button id="header-back-btn" onclick="goBack()" class="hidden w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="رجوع">
+              <i id="header-back-icon" class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+            <button id="header-bell-btn" onclick="openOrdersDrawer()" class="relative w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="التنبيهات والطلبات">
+              <i class="fa-regular fa-bell text-base"></i>
+              <span id="bell-dot" class="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 ring-2 ring-plumPrimary"></span>
+            </button>
+          </div>
+
+          <div id="header-logo-btn" onclick="navigateTo('splash')" class="lamssa-logo-slot w-28 h-16 flex items-center justify-center cursor-pointer z-10" title="العودة لشاشة البداية">
+            <img id="header-logo-img" src="1 logo.png" alt="شعار لمسة" class="max-w-full max-h-full object-contain">
+          </div>
+
+          <!-- زر تبديل اللغة + سجل الحجوزات -->
+          <div class="w-20 flex items-center justify-end gap-1.5 z-10">
+            <button id="header-lang-btn" type="button" onclick="toggleLanguage()" class="lang-toggle-btn h-9 px-2.5 rounded-full bg-white/10 hover:bg-white/20 border border-goldWarm/40 flex items-center justify-center gap-1 text-goldChampagne text-[11px] font-extrabold transition" title="Switch Language">
+              <span class="lang-toggle-label">EN</span>
+            </button>
+            <button id="header-orders-btn" onclick="openOrdersDrawer()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-goldChampagne transition shrink-0" title="سجل الحجوزات">
+              <i class="fa-solid fa-receipt text-xs"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- الموجة السفلية المنحنية للفصل بين الرأس والمحتوى -->
+      <svg viewBox="0 0 400 28" preserveAspectRatio="none" class="w-full h-6 -mt-4 block">
+        <path d="M0,12 C130,32 270,-6 400,14 L400,28 L0,28 Z" fill="#FAF4F0"></path>
+      </svg>
+
+      <!-- زخرفة أوراق نباتية باهتة على زاوية الخلفية -->
+      <svg viewBox="0 0 120 120" class="header-leaf-decor absolute top-24 w-24 h-24 text-plumPrimary/[0.06] pointer-events-none" fill="currentColor">
+        <path d="M10,10 C45,15 65,45 60,80 C30,75 10,45 10,10 Z"/>
+        <path d="M25,45 C60,40 90,60 95,95 C60,95 35,75 25,45 Z"/>
+      </svg>
+    </header>
+
+    <main id="main-content" class="hidden flex-1 overflow-y-auto no-scrollbar px-5 pb-24">
+
+      <section id="screen-client-setup" class="hidden screen-anim space-y-4">
+        <div class="text-center pt-1">
+          <h1 data-i18n="setupHeading" class="text-[22px] font-extrabold text-plumPrimary">جهّزي إطلالتك في مكان واحد</h1>
+          <p data-i18n-html="setupSubtitle" class="text-xs text-inkMuted mt-1 leading-relaxed">
+            اختاري المناسبة والميزانية ونرتّب لكِ الأزياء<br/>والجمال المتاحة من مشاريع قطرية محلية.
+          </p>
+        </div>
+
+        <!-- ما المناسبة؟ -->
+        <div class="space-y-2">
+          <h2 data-i18n="occasionLabel" class="text-sm font-extrabold text-plumPrimary">ما المناسبة؟</h2>
+          <div class="grid grid-cols-3 gap-2.5">
+            <button type="button" data-occasion="graduation" onclick="selectOccasion('graduation', this)" class="occasion-card bg-plumPrimary text-white rounded-3xl py-3.5 px-2 flex flex-col items-center justify-center gap-1.5 shadow-md border border-plumPrimary transition">
+              <i class="fa-solid fa-graduation-cap text-xl"></i>
+              <span data-i18n="occGraduation" class="text-xs font-bold">حفل تخرّج</span>
+            </button>
+            <button type="button" data-occasion="photoshoot" onclick="selectOccasion('photoshoot', this)" class="occasion-card bg-white text-inkMain rounded-3xl py-3.5 px-2 flex flex-col items-center justify-center gap-1.5 shadow-xs border border-blushBorder hover:border-plumPrimary transition">
+              <i class="fa-solid fa-camera text-xl text-plumPrimary"></i>
+              <span data-i18n="occPhotoshoot" class="text-xs font-bold">جلسة تصوير</span>
+            </button>
+            <button type="button" data-occasion="private" onclick="selectOccasion('private', this)" class="occasion-card bg-white text-inkMain rounded-3xl py-3.5 px-2 flex flex-col items-center justify-center gap-1.5 shadow-xs border border-blushBorder hover:border-plumPrimary transition">
+              <i class="fa-regular fa-calendar-check text-xl text-plumPrimary"></i>
+              <span data-i18n="occPrivate" class="text-xs font-bold">مناسبة خاصة</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- متى تحتاجين الجاهزية؟ -->
+        <div class="space-y-2">
+          <h2 data-i18n="whenLabel" class="text-sm font-extrabold text-plumPrimary">متى تحتاجين الجاهزية؟</h2>
+          <div class="bg-white rounded-2xl border border-blushBorder px-3.5 py-3 flex items-center justify-between shadow-xs">
+            <!-- زر فتح التقويم -->
+            <button type="button" onclick="toggleCalendarPopup()" class="flex items-center gap-2 text-start focus:outline-none">
+              <i class="fa-regular fa-calendar text-plumPrimary text-base"></i>
+              <span id="setup-date-label" class="text-xs font-bold text-inkMain">اختاري اليوم</span>
+              <i id="setup-date-chevron" class="fa-solid fa-chevron-down text-[10px] text-inkMuted transition-transform"></i>
+            </button>
+            <input type="hidden" id="setup-date" value="">
+
+            <span class="h-4 w-[1px] bg-blushBorder"></span>
+
+            <!-- زر فتح مختار الوقت -->
+            <button type="button" onclick="toggleTimePopup()" class="flex items-center gap-1.5 text-start focus:outline-none">
+              <i class="fa-regular fa-clock text-plumPrimary text-base"></i>
+              <span id="setup-time-label" class="text-xs font-bold text-inkMain">6:00 مساءً</span>
+              <i id="setup-time-chevron" class="fa-solid fa-chevron-down text-[10px] text-inkMuted transition-transform"></i>
+            </button>
+            <input type="hidden" id="setup-time" value="6:00 مساءً">
+          </div>
+
+          <!-- التقويم التفاعلي -->
+          <div id="setup-calendar-box" class="hidden bg-white rounded-3xl border border-blushBorder p-3.5 shadow-sm space-y-3 screen-anim">
+            <div class="flex items-center justify-between">
+              <button type="button" onclick="changeCalendarMonth(-1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                <i id="cal-prev-icon" class="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+              <span id="cal-month-title" class="text-xs font-extrabold text-plumPrimary"></span>
+              <button type="button" onclick="changeCalendarMonth(1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                <i id="cal-next-icon" class="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+            </div>
+
+            <div id="cal-weekdays-row" class="grid grid-cols-7 text-center text-[10px] font-bold text-inkMuted">
+              <span>أحد</span>
+              <span>إثنين</span>
+              <span>ثلاثاء</span>
+              <span>أربعاء</span>
+              <span>خميس</span>
+              <span>جمعة</span>
+              <span>سبت</span>
+            </div>
+
+            <div id="cal-days-grid" class="grid grid-cols-7 gap-1 text-center"></div>
+          </div>
+
+          <!-- مختار الوقت التفاعلي -->
+          <div id="setup-time-box" class="hidden bg-white rounded-3xl border border-blushBorder p-4 shadow-sm space-y-3 screen-anim">
+            <div class="flex items-center justify-between">
+              <span data-i18n="chooseHourMinute" class="text-xs font-extrabold text-plumPrimary">اختاري الساعة والدقيقة</span>
+              <!-- التبديل بين صباحاً ومساءً -->
+              <div class="flex items-center bg-blushBg p-1 rounded-full border border-blushBorder gap-1">
+                <button type="button" id="period-am-btn" onclick="setTimePeriod('AM')" data-i18n="periodAM" class="px-3 py-1 rounded-full text-[11px] font-bold text-inkMuted transition">صباحاً</button>
+                <button type="button" id="period-pm-btn" onclick="setTimePeriod('PM')" data-i18n="periodPM" class="px-3 py-1 rounded-full text-[11px] font-extrabold bg-plumPrimary text-white transition">مساءً</button>
+              </div>
+            </div>
+
+            <!-- اختيار الساعة والدقيقة -->
+            <div class="flex items-center justify-center gap-3 py-1" dir="ltr">
+              <!-- الساعة -->
+              <div class="flex flex-col items-center gap-1.5">
+                <span data-i18n="hourLabel" class="text-[10px] font-bold text-inkMuted">الساعة</span>
+                <button type="button" onclick="stepTimeHour(1)" class="w-10 h-7 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                  <i class="fa-solid fa-chevron-up text-xs"></i>
+                </button>
+                <input id="time-hour-input" type="number" min="1" max="12" value="6" inputmode="numeric" onchange="onHourInputChange(this)" class="w-16 h-12 text-center text-xl font-black text-plumPrimary bg-blushBg/60 border border-blushBorder rounded-2xl focus:outline-none focus:border-plumPrimary" />
+                <button type="button" onclick="stepTimeHour(-1)" class="w-10 h-7 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                  <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+
+              <span class="text-2xl font-black text-plumPrimary pt-4">:</span>
+
+              <!-- الدقيقة -->
+              <div class="flex flex-col items-center gap-1.5">
+                <span data-i18n="minuteLabel" class="text-[10px] font-bold text-inkMuted">الدقيقة</span>
+                <button type="button" onclick="stepTimeMinute(1)" class="w-10 h-7 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                  <i class="fa-solid fa-chevron-up text-xs"></i>
+                </button>
+                <input id="time-minute-input" type="number" min="0" max="59" value="00" inputmode="numeric" onchange="onMinuteInputChange(this)" class="w-16 h-12 text-center text-xl font-black text-plumPrimary bg-blushBg/60 border border-blushBorder rounded-2xl focus:outline-none focus:border-plumPrimary" />
+                <button type="button" onclick="stepTimeMinute(-1)" class="w-10 h-7 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary flex items-center justify-center transition">
+                  <i class="fa-solid fa-chevron-down text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-1.5" dir="ltr">
+              <button type="button" onclick="setQuickMinute(0)" class="px-2.5 py-1 rounded-full bg-blushBg hover:bg-plumSoft text-[11px] font-bold text-inkMain transition">:00</button>
+              <button type="button" onclick="setQuickMinute(15)" class="px-2.5 py-1 rounded-full bg-blushBg hover:bg-plumSoft text-[11px] font-bold text-inkMain transition">:15</button>
+              <button type="button" onclick="setQuickMinute(30)" class="px-2.5 py-1 rounded-full bg-blushBg hover:bg-plumSoft text-[11px] font-bold text-inkMain transition">:30</button>
+              <button type="button" onclick="setQuickMinute(45)" class="px-2.5 py-1 rounded-full bg-blushBg hover:bg-plumSoft text-[11px] font-bold text-inkMain transition">:45</button>
+            </div>
+
+            <button type="button" onclick="confirmSelectedTime()" data-i18n="confirmTimeBtn" class="w-full bg-plumPrimary hover:opacity-95 text-white font-extrabold text-xs py-2.5 rounded-full transition">
+              تأكيد الوقت
+            </button>
+          </div>
+        </div>
+
+        <!-- ميزانيتك -->
+        <div class="space-y-2">
+          <h2 data-i18n="budgetLabel" class="text-sm font-extrabold text-plumPrimary">ميزانيتك</h2>
+          <div class="bg-white rounded-3xl border border-blushBorder p-4 shadow-xs space-y-3">
+            <div class="flex items-baseline justify-between">
+              <span data-i18n="maxBudgetLabel" class="text-xs font-bold text-inkMuted">الحد الأقصى</span>
+              <div class="text-plumPrimary font-black text-2xl">
+                <span id="setup-budget-value">٤٠٠</span>
+                <span data-i18n="currency" class="text-sm font-bold ms-1">ريال</span>
+              </div>
+            </div>
+            <input id="setup-budget-range" type="range" min="200" max="1000" step="10" value="400" oninput="onBudgetSliderChange(this)" class="lamssa-slider" style="--val: 25%;">
+          </div>
+        </div>
+
+        <!-- ما لديك -->
+        <div class="space-y-2">
+          <h2 data-i18n="whatYouHaveLabel" class="text-sm font-extrabold text-plumPrimary">ما لديك</h2>
+          <div onclick="toggleBlackAbaya()" class="bg-white rounded-2xl border border-blushBorder p-2.5 flex items-center justify-between shadow-xs cursor-pointer hover:border-plumPrimary transition">
+            <div class="flex items-center gap-3">
+              <div class="w-14 h-12 rounded-xl bg-[#EFE6E2] flex items-center justify-center overflow-hidden border border-blushBorder">
+                <svg viewBox="0 0 60 60" class="w-10 h-11">
+                  <path d="M22 10 L38 10 L48 54 L12 54 Z" fill="#1B191A"/>
+                  <path d="M22 10 L10 38 L16 40 L23 20" fill="#1B191A"/>
+                  <path d="M38 10 L50 38 L44 40 L37 20" fill="#1B191A"/>
+                  <path d="M30 10 V54" stroke="#3A3537" stroke-width="1"/>
+                </svg>
+              </div>
+              <span data-i18n="blackAbayaOwned" class="text-xs font-extrabold text-inkMain">عباية سوداء أملكها</span>
+            </div>
+
+            <div id="abaya-check-circle" class="w-6 h-6 rounded-full bg-plumPrimary text-white flex items-center justify-center text-xs transition">
+              <i class="fa-solid fa-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- زر اعرض خطتي -->
+        <div class="pt-1">
+          <button onclick="openProposedClientPlan()" data-i18n="showMyPlanBtn" class="w-full bg-gradient-to-b from-[#6B2141] to-[#4A142C] hover:opacity-95 text-white font-extrabold text-base py-3.5 rounded-full shadow-lg shadow-plumPrimary/25 transition active:scale-[0.99]">
+            اعرض خطتي
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- الشاشة 2: خطة المناسبة + الخط الزمني                          -->
+      <!-- ============================================================= -->
+      <section id="screen-client-plan" class="hidden screen-anim space-y-3.5">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center gap-2 text-plumPrimary">
+            <i id="plan-heading-icon" class="fa-solid fa-graduation-cap text-xl"></i>
+            <h1 id="plan-heading" class="text-xl font-extrabold">خطة حفل تخرّج</h1>
+          </div>
+          <p id="plan-subheading" class="text-xs font-bold text-inkMuted mt-0.5"></p>
+        </div>
+
+        <!-- تسلسل حالات الحجز -->
+        <div id="plan-status-stepper" class="bg-white/95 rounded-2xl border border-blushBorder p-2.5 shadow-xs space-y-2"></div>
+
+        <div class="bg-white/95 rounded-3xl border border-blushBorder p-3.5 shadow-sm relative">
+          <!-- الخط الرأسي الممتد على جانب الخط الزمني -->
+          <div class="timeline-vertical-line absolute top-8 bottom-10 w-[2px] bg-plumPrimary/35"></div>
+
+          <div id="timeline-items-wrapper" class="space-y-3"></div>
+        </div>
+
+        <!-- قسم الإجمالي ورسالة الميزانية -->
+        <div class="px-1 space-y-1">
+          <div class="flex items-baseline justify-between">
+            <span data-i18n="totalLabel" class="text-base font-extrabold text-plumPrimary">الإجمالي</span>
+            <span id="plan-total-amount" class="text-2xl font-black text-plumPrimary">0 <span class="text-sm font-bold">ريال</span></span>
+          </div>
+          <div id="plan-budget-feedback" class="flex items-center gap-1.5 text-xs font-extrabold text-sageText">
+            <i class="fa-solid fa-circle-check text-sm"></i>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <button id="simulate-accept-all-btn" onclick="acceptAllAwaitingServices()" class="hidden w-full bg-sageBg hover:opacity-95 text-sageText border border-sageText/35 font-extrabold text-xs py-3 px-4 rounded-full flex items-center justify-center gap-2 shadow-xs transition">
+            <i class="fa-solid fa-user-check text-sm"></i>
+            <span id="simulate-accept-all-label">جرّبي: قبول مقدمات الخدمات (تأكيد الحجز)</span>
+          </button>
+
+          <button id="toggle-alt-makeup-btn" onclick="toggleAlternativeMakeup()" class="w-full bg-white hover:bg-plumSoft/60 text-plumPrimary border border-plumPrimary/40 font-extrabold text-xs py-3 px-4 rounded-full flex items-center justify-center gap-2 shadow-xs transition">
+            <i class="fa-regular fa-calendar-xmark text-sm"></i>
+            <span id="toggle-alt-makeup-label">جرّبي: تعذّر موعد المكياج (البديل 270 ر.ق)</span>
+          </button>
+
+          <button onclick="navigateTo('client-setup')" class="w-full bg-white hover:bg-plumSoft/40 text-plumPrimary border border-blushBorder font-bold text-xs py-2.5 px-4 rounded-full flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-pen text-xs"></i>
+            <span data-i18n="editOccasionBudgetBtn">تعديل المناسبة أو الميزانية</span>
+          </button>
+
+          <button id="confirm-plan-btn" onclick="confirmCurrentLookPlan()" class="w-full bg-gradient-to-b from-[#6B2141] to-[#4A142C] text-white font-extrabold text-sm py-3 rounded-full shadow-md flex items-center justify-center gap-2 transition">
+            <i id="confirm-plan-icon" class="fa-solid fa-check-circle text-goldChampagne"></i>
+            <span id="confirm-plan-label" data-i18n="confirmPlanBtn">اعتماد الخطة وتسجيل طلب تجريبي</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="screen-events" class="hidden screen-anim space-y-4">
+        <div class="text-center pt-1">
+          <div class="inline-flex items-center justify-center gap-2 text-plumPrimary">
+            <h1 data-i18n="eventsHeading" class="text-xl font-extrabold">احجزي ركن «لمسة قبل الصورة»</h1>
+            <i class="fa-solid fa-wand-magic-sparkles text-lg shrink-0"></i>
+          </div>
+          <p data-i18n="eventsSubtitle" class="text-xs text-inkMuted mt-1">
+            ركن في موقع الفعالية لتجهيز الإطلالات قبل التصوير.
+          </p>
+        </div>
+
+        <div class="space-y-1.5">
+          <label data-i18n="boothHoursLabel" class="block text-xs font-extrabold text-plumPrimary">مدة التشغيل (ساعات)</label>
+          <div class="flex items-center justify-between bg-white rounded-full border border-blushBorder p-1.5 shadow-xs">
+            <button type="button" onclick="changeBoothStepper('hours', -1)" class="w-10 h-10 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold text-lg flex items-center justify-center transition">−</button>
+            <span id="booth-hours-val" class="text-lg font-black text-inkMain">2</span>
+            <button type="button" onclick="changeBoothStepper('hours', 1)" class="w-10 h-10 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold text-lg flex items-center justify-center transition">+</button>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label data-i18n="boothStaffLabel" class="block text-xs font-extrabold text-plumPrimary">عدد العاملات</label>
+          <div class="flex items-center justify-between bg-white rounded-full border border-blushBorder p-1.5 shadow-xs">
+            <button type="button" onclick="changeBoothStepper('staff', -1)" class="w-10 h-10 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold text-lg flex items-center justify-center transition">−</button>
+            <span id="booth-staff-val" class="text-lg font-black text-inkMain">2</span>
+            <button type="button" onclick="changeBoothStepper('staff', 1)" class="w-10 h-10 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold text-lg flex items-center justify-center transition">+</button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label data-i18n="boothServicesLabel" class="block text-xs font-extrabold text-plumPrimary">الخدمات</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" data-service="shayla" onclick="toggleBoothService(this, 'shayla')" class="booth-svc-pill active bg-white border-2 border-plumPrimary rounded-full py-2.5 px-3 flex items-center justify-center gap-2 shadow-xs transition">
+              <span class="w-6 h-6 rounded-full bg-plumSoft text-plumPrimary flex items-center justify-center text-xs shrink-0">
+                <i class="fa-solid fa-user-tie"></i>
+              </span>
+              <span data-i18n="svcShayla" class="text-xs font-extrabold text-inkMain">ضبط الشيلة</span>
+            </button>
+
+            <button type="button" data-service="lint" onclick="toggleBoothService(this, 'lint')" class="booth-svc-pill active bg-white border-2 border-plumPrimary rounded-full py-2.5 px-3 flex items-center justify-center gap-2 shadow-xs transition">
+              <span class="w-6 h-6 rounded-full bg-plumSoft text-plumPrimary flex items-center justify-center text-xs shrink-0">
+                <i class="fa-solid fa-brush"></i>
+              </span>
+              <span data-i18n="svcLint" class="text-xs font-extrabold text-inkMain">إزالة الوبر من العباية</span>
+            </button>
+
+            <button type="button" data-service="makeup" onclick="toggleBoothService(this, 'makeup')" class="booth-svc-pill active col-span-2 mx-auto w-2/3 bg-white border-2 border-plumPrimary rounded-full py-2.5 px-4 flex items-center justify-center gap-2 shadow-xs transition">
+              <span class="w-6 h-6 rounded-full bg-plumSoft text-plumPrimary flex items-center justify-center text-xs shrink-0">
+                <i class="fa-solid fa-wand-sparkles"></i>
+              </span>
+              <span data-i18n="svcMakeup" class="text-xs font-extrabold text-inkMain">رتوش المكياج</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-blushBorder px-3.5 py-2.5 flex items-center gap-2 text-xs">
+          <i class="fa-solid fa-location-dot text-plumPrimary"></i>
+          <input id="booth-location-input" type="text" value="مجمّع البحوث جامعة قطر" oninput="boothLocationEdited = true" class="w-full bg-transparent font-bold text-inkMain focus:outline-none" placeholder="موقع الفعالية">
+        </div>
+
+        <div class="bg-[#F3E5E3] border border-blushBorder rounded-2xl p-3.5 space-y-2">
+          <div class="flex items-start gap-2.5">
+            <i class="fa-solid fa-circle-info text-plumPrimary mt-0.5 text-sm"></i>
+            <p data-i18n="boothPriceNote" class="text-[11px] font-bold text-inkMain leading-relaxed">
+              تُقدَّر التكلفة بحسب مدة التشغيل وعدد العاملات والخدمات المختارة
+            </p>
+          </div>
+          <div class="flex items-center justify-between pt-1.5 border-t border-plumPrimary/15">
+            <span data-i18n="boothEstimatedLabel" class="text-xs font-bold text-inkMuted">التكلفة التقديرية للركن:</span>
+            <span id="booth-estimated-price" class="text-base font-black text-plumPrimary">475 ريال</span>
+          </div>
+        </div>
+
+        <!-- زر أرسلي طلب الحجز -->
+        <button onclick="submitBoothRequest()" class="w-full bg-gradient-to-b from-[#6B2141] to-[#4A142C] hover:opacity-95 text-white font-extrabold text-base py-3.5 rounded-full shadow-lg shadow-plumPrimary/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
+          <i class="fa-regular fa-calendar-check text-goldChampagne"></i>
+          <span data-i18n="submitBoothBtn">تسجيل طلب حجز تجريبي</span>
+        </button>
+      </section>
+
+      <!-- ============================================================= -->
+      <!-- الشاشة 4: المشاريع - الأزياء والإكسسوارات + صوّري مجموعتكِ     -->
+      <!-- ============================================================= -->
+      <section id="screen-projects" class="hidden screen-anim space-y-3.5">
+        <div class="grid grid-cols-2 gap-1.5 bg-white p-1 rounded-full border border-blushBorder shadow-xs">
+          <button id="proj-subtab-fashion" onclick="switchProjectsSubtab('fashion')" data-i18n="subtabFashion" class="py-2 px-3 rounded-full text-xs font-extrabold bg-plumPrimary text-white transition">
+            خيارات الأزياء والإكسسوارات
+          </button>
+          <button id="proj-subtab-shoot" onclick="switchProjectsSubtab('shoot')" data-i18n="subtabShoot" class="py-2 px-3 rounded-full text-xs font-extrabold text-inkMuted hover:text-plumPrimary transition">
+            صوّري مجموعتكِ
+          </button>
+        </div>
+
+        <!-- التبويب أ: خيارات الأزياء والإكسسوارات والجمال -->
+        <div id="projects-fashion-view" class="space-y-3">
+          <div class="text-center">
+            <h1 data-i18n="projectsHeading" class="text-lg font-extrabold text-plumPrimary">المشاريع القطرية المشاركة</h1>
+            <p data-i18n="projectsSubtitle" class="text-[11px] text-inkMuted">تصفّحي خيارات العبايات والإكسسوارات والجمال وأضيفيها لخطتكِ</p>
+          </div>
+
+          <!-- فلاتر سريعة -->
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+            <button data-cat="all" onclick="filterFashionCatalog('all', this)" data-i18n="catAll" class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold bg-plumPrimary text-white">الكل</button>
+            <button data-cat="abayas" onclick="filterFashionCatalog('abayas', this)" data-i18n="catAbayas" class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold bg-white border border-blushBorder text-inkMain">عبايات</button>
+            <button data-cat="accessories" onclick="filterFashionCatalog('accessories', this)" data-i18n="catAccessories" class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold bg-white border border-blushBorder text-inkMain">إكسسوارات وحقائب</button>
+            <button data-cat="tailoring" onclick="filterFashionCatalog('tailoring', this)" data-i18n="catTailoring" class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold bg-white border border-blushBorder text-inkMain">تعديل وخياطة</button>
+            <button data-cat="beauty" onclick="filterFashionCatalog('beauty', this)" data-i18n="catBeauty" class="cat-pill shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold bg-white border border-blushBorder text-inkMain">مكياج وجمال</button>
+          </div>
+
+          <!-- قائمة البطاقات -->
+          <div id="fashion-catalog-list" class="space-y-2.5"></div>
+
+          <!-- ملخص مباشر للخطة الحالية وزر الانتقال إليها -->
+          <div id="catalog-plan-summary-bar" class="bg-white rounded-2xl border border-plumPrimary/30 p-3 flex items-center justify-between gap-2 shadow-xs"></div>
+        </div>
+
+        <!-- التبويب ب: صوّري مجموعتكِ -->
+        <div id="projects-shoot-view" class="hidden space-y-4">
+          <div class="text-center pt-1">
+            <div class="inline-flex items-center justify-center gap-2 text-plumPrimary">
+              <h1 data-i18n="shootHeading" class="text-xl font-extrabold">صوّري مجموعتكِ</h1>
+              <i class="fa-solid fa-camera text-xl"></i>
+            </div>
+            <p data-i18n-html="shootSubtitle" class="text-xs text-inkMuted mt-1 leading-relaxed">
+              لأصحاب مشاريع العبايات والإكسسوارات.. جلسة<br/>تصوير احترافية مصغّرة لمجموعة أزياء.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1.5 text-center">
+              <label data-i18n="shootPiecesLabel" class="block text-xs font-extrabold text-plumPrimary">عدد القطع</label>
+              <div class="flex items-center justify-between bg-white rounded-full border border-blushBorder p-1.5 shadow-xs">
+                <button type="button" onclick="changeShootStepper('pieces', -1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold flex items-center justify-center">−</button>
+                <span id="shoot-pieces-val" class="text-base font-black text-inkMain">5</span>
+                <button type="button" onclick="changeShootStepper('pieces', 1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 text-center">
+              <label data-i18n="shootLooksLabel" class="block text-xs font-extrabold text-plumPrimary">عدد الإطلالات</label>
+              <div class="flex items-center justify-between bg-white rounded-full border border-blushBorder p-1.5 shadow-xs">
+                <button type="button" onclick="changeShootStepper('looks', -1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold flex items-center justify-center">−</button>
+                <span id="shoot-looks-val" class="text-base font-black text-inkMain">2</span>
+                <button type="button" onclick="changeShootStepper('looks', 1)" class="w-8 h-8 rounded-full bg-blushBg hover:bg-plumSoft text-plumPrimary font-extrabold flex items-center justify-center">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label data-i18n="shootOutputsLabel" class="block text-xs font-extrabold text-plumPrimary">المخرجات</label>
+            <div class="grid grid-cols-2 gap-2.5">
+              <button type="button" data-output="photos" onclick="toggleShootOutput(this, 'photos')" class="shoot-out-btn active bg-plumPrimary text-white border border-plumPrimary rounded-full py-3 px-3 flex items-center justify-center gap-2 shadow-sm transition">
+                <i class="fa-regular fa-image"></i>
+                <span data-i18n="outputPhotos" class="text-xs font-extrabold">صور للمتجر</span>
+              </button>
+
+              <button type="button" data-output="video" onclick="toggleShootOutput(this, 'video')" class="shoot-out-btn bg-white text-inkMain border border-blushBorder rounded-full py-3 px-3 flex items-center justify-center gap-2 shadow-xs transition">
+                <i class="fa-regular fa-circle-play text-plumPrimary"></i>
+                <span data-i18n="outputVideo" class="text-xs font-extrabold">فيديو قصير</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-[#F3E5E3] border border-blushBorder rounded-2xl p-3.5 flex items-start gap-2.5">
+            <i class="fa-solid fa-camera text-plumPrimary mt-0.5 text-base"></i>
+            <p data-i18n="shootInfoNote" class="text-[11px] font-bold text-inkMain leading-relaxed">
+              تحصلين على نسخة عالية الجودة من الصور ومقاطع الفيديو جاهزة للاستخدام في متجرك.
+            </p>
+          </div>
+
+          <!-- زر اطلبي موعداً -->
+          <button onclick="submitShootBooking()" class="w-full bg-gradient-to-b from-[#6B2141] to-[#4A142C] hover:opacity-95 text-white font-extrabold text-base py-3.5 rounded-full shadow-lg shadow-plumPrimary/25 flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <i class="fa-regular fa-calendar-plus text-goldChampagne"></i>
+            <span data-i18n="submitShootBtn">تسجيل طلب موعد تجريبي</span>
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- =============================================================== -->
+    <!-- شريط التنقل السفلي الثابت                                       -->
+    <!-- =============================================================== -->
+    <footer id="app-bottom-nav" class="hidden bg-white/95 backdrop-blur-md border-t border-blushBorder px-6 py-2.5 flex items-center justify-between z-30 shrink-0">
+      <button id="nav-btn-client" onclick="navigateTo('client-setup')" class="flex flex-col items-center justify-center gap-1 text-plumPrimary font-extrabold transition">
+        <i class="fa-solid fa-house text-lg"></i>
+        <span data-i18n="navClient" class="text-[11px]">العميلة</span>
+      </button>
+
+      <button id="nav-btn-events" onclick="navigateTo('events')" class="flex flex-col items-center justify-center gap-1 text-inkMuted hover:text-plumPrimary font-bold transition">
+        <i class="fa-regular fa-calendar-check text-lg"></i>
+        <span data-i18n="navEvents" class="text-[11px]">الفعاليات</span>
+      </button>
+
+      <button id="nav-btn-projects" onclick="navigateTo('projects')" class="flex flex-col items-center justify-center gap-1 text-inkMuted hover:text-plumPrimary font-bold transition">
+        <i class="fa-solid fa-gem text-lg"></i>
+        <span data-i18n="navProjects" class="text-[11px]">المشاريع</span>
+      </button>
+    </footer>
+
+    <!-- =============================================================== -->
+    <!-- نافذة سجل الطلبات والتأكيدات (Orders & Bookings Modal)           -->
+    <!-- =============================================================== -->
+    <div id="orders-drawer" class="hidden absolute inset-0 z-50 bg-black/55 backdrop-blur-xs flex items-end justify-center">
+      <div class="bg-blushBg w-full rounded-t-3xl p-5 max-h-[80%] overflow-y-auto shadow-2xl border-t-2 border-goldWarm screen-anim">
+        <div class="flex items-center justify-between border-b border-blushBorder pb-3 mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-clipboard-check text-plumPrimary"></i>
+            <h3 data-i18n="ordersDrawerTitle" class="text-sm font-extrabold text-plumPrimary">طلباتي وحجوزاتي في لمسة</h3>
+          </div>
+          <button onclick="closeOrdersDrawer()" class="w-7 h-7 rounded-full bg-white border border-blushBorder flex items-center justify-center text-inkMain text-xs">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="mb-3 px-3 py-2 rounded-xl bg-[#F7EFE8] border border-goldWarm/50 flex items-center gap-2 text-[10.5px] font-bold text-inkMuted">
+          <i class="fa-solid fa-flask text-plumPrimary shrink-0"></i>
+          <span data-i18n="ordersPrototypeNote">نموذج أولي تجريبي — تُحفَظ الطلبات داخل الصفحة فقط دون إرسال فعلي إلى الشريكات.</span>
+        </div>
+
+        <div id="orders-drawer-list" class="space-y-2.5"></div>
+      </div>
+    </div>
+
+    <!-- =============================================================== -->
+    <!-- إشعار منبثق أنيق (Toast)                                        -->
+    <!-- =============================================================== -->
+    <div id="lamssa-toast" class="hidden absolute top-24 left-4 right-4 z-50 bg-plumDark text-white px-4 py-3 rounded-2xl shadow-xl border border-goldWarm/60 flex items-center gap-2.5 text-xs font-bold screen-anim">
+      <i class="fa-solid fa-circle-check text-goldChampagne text-base shrink-0"></i>
+      <span id="lamssa-toast-msg" class="leading-snug"></span>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
